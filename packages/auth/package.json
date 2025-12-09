@@ -1,0 +1,25 @@
+{
+  "name": "@react-agents/auth",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "type": "module",
+  "scripts": {},
+  "devDependencies": {
+    "@react-agents/config": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:",
+    "@react-agents/db": "workspace:*"
+  }
+}
