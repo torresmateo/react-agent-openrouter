@@ -12,17 +12,14 @@ type ChatAgent = {
   model?: string;
 };
 
-type BetterAuthSessionLike =
-  | {
-      user?: { id?: string };
-      session?: { userId?: string };
-    }
-  | {
-      data?: {
-        user?: { id?: string };
-        session?: { userId?: string };
-      };
-    };
+type BetterAuthSessionLike = {
+  user?: { id?: string };
+  session?: { userId?: string };
+  data?: {
+    user?: { id?: string };
+    session?: { userId?: string };
+  };
+};
 
 type OpenRouterChatCompletionsResponse = {
   choices?: Array<{
@@ -55,7 +52,9 @@ async function requireUserId(request: Request): Promise<string> {
   ).api;
 
   const session: BetterAuthSessionLike | null = maybeApi?.getSession
-    ? await maybeApi.getSession({ headers: request.headers })
+    ? ((await maybeApi.getSession({
+        headers: request.headers,
+      })) as BetterAuthSessionLike | null)
     : await (async () => {
         // Fallback: invoke the auth handler against the get-session endpoint.
         const url = new URL(request.url);
@@ -69,7 +68,9 @@ async function requireUserId(request: Request): Promise<string> {
         if (!res.ok) {
           return null;
         }
-        return (await res.json().catch(() => null)) as unknown;
+        return (await res
+          .json()
+          .catch(() => null)) as BetterAuthSessionLike | null;
       })();
 
   // better-auth shapes differ slightly between server/api and client
